@@ -67,7 +67,7 @@ async function saveTime(name, time) {
     let times = JSON.parse(localStorage.getItem('times')) || []; // Get existing times or create a new array
     times.push({ name: name, time: time, totalSeconds: seconds }); // Add new time with total seconds for sorting
     localStorage.setItem('times', JSON.stringify(times)); // Save updated times to local storage
-    const dataURL = 'http://localhost/wordpress-6.6.2/wordpress/wp-json/stellar/v1/leaderboard';
+    const dataURL = 'https://18.196.164.122/wp-json/stellar/v1/leaderboard';
     try {
         const response = await fetch(dataURL, {
             method: 'POST',
