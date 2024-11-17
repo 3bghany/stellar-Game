@@ -1,15 +1,19 @@
 /* General styling for the body and game layout */
+/* General styling for the body and game layout */
 body, html {
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100%;
+    width: 100%;
     background-color: #d2691e;
     font-family: Arial, sans-serif;
+    overflow: hidden; /* Prevent scrolling */
 }
 
+/* Responsive Game Container */
 .game-container {
     display: flex;
     flex-direction: column;
@@ -18,40 +22,78 @@ body, html {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+
+    /* New size adjustments for PC */
+    /* width: 80%;
+    max-width: 1000px; 
+    height: 90vh; 
+    max-height: 800px; */
+    
 }
 
+/* Responsive Header */
 .header {
     display: flex;
     justify-content: space-between;
-    width: 800px; /* Match the canvas width */
+    width: 100%; /* Use full width of the container */
     padding: 10px;
     font-size: 1.2rem;
     background-color: #f0f0f0;
     border-radius: 5px;
+    box-sizing: border-box;
 }
 
-.timer, .score {
+/* Responsive Timer and Score */
+.timer, .score, .username {
     font-weight: bold;
 }
 
+/* Responsive Canvas */
 #mazeCanvas {
     border: 2px solid #000;
     margin-top: 10px;
+    width: 100%;  /* Use full width of the container */
+    height: 60vh; /* Use viewport height for better scaling */
 }
 
-/* Popup styling */
+/* Joystick Container */
+#joystick-container {
+    position: fixed;
+    bottom: 10%;
+    left: 5%;
+    width: 80px;  /* Adjusted size for mobile */
+    height: 80px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    touch-action: none;
+}
+
+#joystick {
+    width: 30px; /* Adjusted size for mobile */
+    height: 30px;
+    background: #0085ff;
+    border-radius: 50%;
+    position: relative;
+    left: 25px;
+    top: 25px;
+    transition: 0.1s;
+}
+
+/* Popup Styling */
 .popup {
     position: fixed;
-    top: 30%;
-    left: 30%;
-    width: 300px;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 400px;
     padding: 20px;
     background-color: orange;
     border: 2px solid #000;
     color: white;
     text-align: center;
     border-radius: 10px;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-family: Arial, sans-serif;
     z-index: 1000;
     opacity: 0;
@@ -66,4 +108,52 @@ body, html {
 .popup.visible {
     opacity: 1;
     display: block;
+}
+
+/* Media Queries for different devices */
+
+/* For tablets and iPads */
+@media (min-width: 600px) and (max-width: 1024px) {
+    .game-container {
+        width: 90%; /* Adjust width */
+    }
+
+    #mazeCanvas {
+        height: 70vh; /* Increase height for tablets */
+    }
+
+    #joystick-container {
+        width: 100px;
+        height: 100px;
+        left: 10%;
+    }
+
+    #joystick {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* For mobile phones */
+@media (max-width: 600px) {
+    .header {
+        flex-direction: column; /* Stack header elements */
+        align-items: center;
+        font-size: 1rem;
+    }
+
+    #joystick-container {
+        width: 70px;
+        height: 70px;
+        left: 5%;
+    }
+
+    #joystick {
+        width: 25px;
+        height: 25px;
+    }
+
+    #mazeCanvas {
+        height: 50vh; /* Decrease height for mobile */
+    }
 }

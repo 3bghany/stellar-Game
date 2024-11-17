@@ -7,14 +7,15 @@ let seconds = 0;
 let score = 0;
 let timerInterval;
 let gameEnded = false;
+let stopPlayer=false;
+let player = { x: 740, y: 550, width: 30, height: 30 }; // Player's start position
 
-let player = { x: 760, y: 560, width: 40, height: 40 }; // Player's start position
 let coins = [
-    { x: 100, y: 100, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
-    { x: 200, y: 150, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
-    { x: 300, y: 200, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
-    { x: 400, y: 250, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
-    { x: 500, y: 300, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
+    { x: 60, y: 50, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
+    { x: 580, y: 50, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
+    { x: 50, y: 400, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
+    { x: 150, y: 570, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
+    { x: 630, y: 330, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
 ];
 
 function collectCoin(playerX, playerY) {
@@ -67,7 +68,7 @@ async function saveTime(name, time) {
     let times = JSON.parse(localStorage.getItem('times')) || []; // Get existing times or create a new array
     times.push({ name: name, time: time, totalSeconds: seconds }); // Add new time with total seconds for sorting
     localStorage.setItem('times', JSON.stringify(times)); // Save updated times to local storage
-    const dataURL = 'https://18.196.164.122/wp-json/stellar/v1/leaderboard';
+    const dataURL = 'http://localhost/wordpress-6.6.2/wordpress/wp-json/stellar/v1/leaderboard';
     try {
         const response = await fetch(dataURL, {
             method: 'POST',
@@ -118,15 +119,20 @@ function showPopup(message) {
     popup.style.borderRadius = "10px";
     popup.style.fontFamily = "Arial, sans-serif";
     popup.style.zIndex = "1000";
-    
+
     popup.textContent = message; // Add message content
 
     // Append the popup to the body
     document.body.appendChild(popup);
+    clearInterval(timerInterval); // Stop the timer
+    stopPlayer=true;
+
 
     // Remove popup after 3 seconds
     setTimeout(() => {
         document.body.removeChild(popup);
+        timerInterval = setInterval(updateTimer, 1000);
+        stopPlayer=false;
     }, 3000);
 }
 
@@ -152,15 +158,35 @@ let walls = [
     // Outer boundary
     [0, 0, 800, 0], [0, 0, 0, 600], [800, 0, 800, 600], [0, 600, 800, 600],
     // Complex inner walls (adjust as needed)
-    [20, 20, 100, 20], [100, 20, 100, 80], [100, 80, 180, 80], [180, 80, 180, 140], 
-    [20, 180, 160, 180], [160, 180, 160, 260], [160, 260, 220, 260], [220, 260, 220, 320],
-    [300, 60, 380, 60], [380, 60, 380, 140], [380, 140, 460, 140], [460, 140, 460, 220],
-    [500, 20, 580, 20], [580, 20, 580, 100], [580, 100, 660, 100], [660, 100, 660, 180],
-    [700, 200, 780, 200], [780, 200, 780, 280], [700, 280, 700, 360], [700, 360, 780, 360],
-    [420, 240, 420, 320], [420, 320, 500, 320], [500, 320, 500, 400], [500, 400, 580, 400],
-    [60, 400, 140, 400], [140, 400, 140, 480], [140, 480, 220, 480], [220, 480, 220, 560]
-];
+    [20, 590, 780, 590],[20, 70, 20,610 ],[20, 30, 780, 30],[780, 30, 780, 550],
+    [520, 550, 520, 590],[180, 550, 180, 590],[650, 550, 780, 550],[650, 510, 650, 550],
+    [610, 510, 610, 550],[460, 510, 460, 550],[240, 510, 240, 550],[120, 510, 120, 550],
+    [240, 550, 460, 550],[180, 550, 80, 550],[610, 510, 460, 510],[120, 510, 400, 510],
+    [20, 510, 80, 510],[80, 470, 80, 510],[180, 470, 180, 510],[400, 470, 400, 510],
+    [740, 390, 740, 510],[650, 470, 740, 470],[320, 470, 540, 470],[220, 470, 270, 470],
+    [80, 470, 130, 470],[610, 430, 610, 470],[470, 430, 470, 470],[220, 430, 220, 470],
+    [270, 350, 270, 470],[130, 390, 130, 470],[130, 430, 180, 430],[320, 430, 430, 430],
+    [470, 430, 540, 430],[610, 430, 650, 430],[740, 390, 780, 390],[20, 430, 80, 430],
+    [80, 350, 80, 430],[430, 390, 430, 430],[380, 340, 380, 390],[650, 350, 650, 430],
+    [80, 350, 170, 350],[270, 350, 320, 350],[650, 350, 780, 350],[450, 350, 490, 350],
+    [380, 390, 530, 390],[450, 310, 450, 350],[490, 270, 490, 350],[530, 270, 530, 390],
+    [610, 310, 610, 390],[740, 270, 740, 310],[650, 230, 650, 310],[320, 350, 320, 430],
+    [220, 310, 220, 390],[170, 310, 170, 390],[20, 310, 100, 310],[170, 310, 320, 310],
+    [410, 310, 450, 310],[610, 310, 740, 310],[410, 270, 410, 310],[320, 270, 320, 310],
+    [100, 270, 100, 310],[60, 270, 140, 270],[220, 270, 320, 270],[490, 270, 610, 270],
+    [650, 230, 780, 230],[450, 230, 530, 230],[180, 230, 410, 230],[100, 230, 140, 230],
+    [140, 190, 140, 270],[220, 230, 220, 270],[450, 230, 450, 270],[610, 190, 610, 270],
+    [500, 190, 690, 190],[350, 190, 450, 190],[220, 190, 310, 190],[60, 190, 100, 190],
+    [60, 190, 60, 270],[100, 150, 100, 190],[100, 150, 140, 150],[220, 110, 220, 190],
+    [310, 70, 310, 190],[450, 150, 450, 190],[620, 110, 620, 190],[500, 190, 500, 230],
+    [690, 150, 690, 190],[430, 110, 740, 110],[180, 110, 220, 110],[310, 110, 350, 110],
+    [660, 150, 740, 150],[450, 150, 620, 150],[350, 150, 390, 150],[350, 110, 350, 150],
+    [390, 70, 390, 150],[500, 70, 500, 110],[500, 70, 620, 70],[620, 30, 620, 70],
+    [740, 70, 740, 110],[660, 70, 740, 70],[390, 70, 460, 70],[390, 30, 390, 70],
+    [270, 70, 310, 70],[270, 70, 270, 150],[180, 110, 180, 190],[20, 70, 220, 70],
+    [140, 70, 140, 110],[60, 110, 140, 110],[60, 110, 60, 150],
 
+];
 function drawWalls() {
     ctx.strokeStyle = "#000"; // Set color for walls
     ctx.lineWidth = 5; // Wall thickness
@@ -173,8 +199,8 @@ function drawWalls() {
 }
 
 function drawPlayer() {
-    ctx.fillStyle = "#000";
-    ctx.fillRect(player.x, player.y, player.width, player.height); // Player as a black rectangle
+    // ctx.fillStyle = "#000";
+    // ctx.fillRect(player.x, player.y, player.width, player.height); // Player as a black rectangle
 }
 
 function drawCoins() {
@@ -189,12 +215,10 @@ function drawCoins() {
 }
 
 function movePlayer(event) {
-    const speed = 20;
+    const speed = 10;
     let nextX = player.x;
     let nextY = player.y;
-
-    // Start timer on the first movement
-    startTimer();
+    let isArrowClicked=true;
 
     switch (event.key) {
         case 'ArrowUp':
@@ -209,12 +233,17 @@ function movePlayer(event) {
         case 'ArrowRight':
             nextX += speed;
             break;
+        default :
+            isArrowClicked=false;
+        break ;
     }
 
     // Prevent movement if colliding with walls
-    if (!isCollidingWithWalls(nextX, nextY, player.width, player.height)) {
+    if (!isCollidingWithWalls(nextX, nextY, player.width, player.height) && isArrowClicked && !stopPlayer) {
         player.x = nextX;
         player.y = nextY;
+        // Start timer on the first movement
+        startTimer();
     }
 
     // Check for coin collection after moving
@@ -227,17 +256,31 @@ function isCollidingWithWalls(nextX, nextY, width, height) {
     for (let wall of walls) {
         const [x1, y1, x2, y2] = wall;
 
-        // Horizontal wall
-        if (y1 === y2 && nextY + height > y1 && nextY < y1 && ((nextX > x1 && nextX < x2) || (nextX + width > x1 && nextX + width < x2))) {
-            return true;
+        // Ensure the wall coordinates are correctly interpreted regardless of their order
+        const minX = Math.min(x1, x2);
+        const maxX = Math.max(x1, x2);
+        const minY = Math.min(y1, y2);
+        const maxY = Math.max(y1, y2);
+
+        // Horizontal wall collision check
+        if (y1 === y2) {
+            if (nextY + height > minY && nextY < minY &&
+                ((nextX + width > minX && nextX < maxX) || (nextX > minX && nextX < maxX))) {
+                return true;
+            }
         }
-        // Vertical wall
-        if (x1 === x2 && nextX + width > x1 && nextX < x1 && ((nextY > y1 && nextY < y2) || (nextY + height > y1 && nextY + height < y2))) {
-            return true;
+
+        // Vertical wall collision check
+        if (x1 === x2) {
+            if (nextX + width > minX && nextX < minX &&
+                ((nextY + height > minY && nextY < maxY) || (nextY > minY && nextY < maxY))) {
+                return true;
+            }
         }
     }
     return false;
 }
+
 
 
 // Main game loop
@@ -254,21 +297,12 @@ gameLoop();
 
 // Start timer when player moves
 window.addEventListener('keydown', movePlayer);
-canvas.addEventListener('click', () => {
-    startTimer();
-});
+// canvas.addEventListener('click', () => {
+//     startTimer();
+// });
 
-
-
-
-
-
-
-
-
-
- // Example data after the maze is completed
- function onGameCompleted() {
+// Example data after the maze is completed
+function onGameCompleted() {
     const playerName = localStorage.getItem('username') || 'Guest';
     const timeTaken = calculateTimeTaken(); // Your method for calculating time
 
@@ -293,7 +327,135 @@ function calculateTimeTaken() {
     return 42; // Example: return time in seconds
 }
 
-
-
-
 document.getElementById('playerName').textContent = localStorage.getItem('username') || 'Guest';
+
+// joy stic controlling
+const joystickContainer = document.getElementById('joystick-container');
+const joystick = document.getElementById('joystick');
+
+let centerX = joystickContainer.offsetWidth / 2;
+let centerY = joystickContainer.offsetHeight / 2;
+let moving = false;
+let lastMoveTime = 0;
+const moveInterval = 70; // Move every 100ms (10 times per second)
+
+// Throttle function to control the movement rate
+function throttleMove(callback, interval) {
+    return (...args) => {
+        const now = Date.now();
+        if (now - lastMoveTime >= interval) {
+            callback(...args);
+            lastMoveTime = now;
+        }
+    };
+}
+
+// Throttled movePlayer function
+const throttledMovePlayer = throttleMove(mobileMovePlayer, moveInterval);
+
+joystickContainer.addEventListener('touchstart', (e) => {
+    moving = true;
+});
+
+joystickContainer.addEventListener('touchmove', (e) => {
+    if (!moving) return;
+
+    const touch = e.touches[0];
+    const rect = joystickContainer.getBoundingClientRect();
+
+    let x = touch.clientX - rect.left;
+    let y = touch.clientY - rect.top;
+
+    let deltaX = x - centerX;
+    let deltaY = y - centerY;
+
+    // Calculate distance from the center
+    const distance = Math.min(Math.hypot(deltaX, deltaY), 40); // Limit joystick movement
+    const angle = Math.atan2(deltaY, deltaX);
+
+    // Calculate joystick position
+    const joystickX = distance * Math.cos(angle);
+    const joystickY = distance * Math.sin(angle);
+
+    joystick.style.transform = `translate(${joystickX}px, ${joystickY}px)`;
+
+    // Determine movement direction with throttling based on angle
+    const angleDeg = angle * 180 / Math.PI; // Convert angle to degrees
+    let direction = [];
+
+    // Handle diagonal and cardinal directions
+    if (angleDeg >= -45 && angleDeg < 45) { // Right
+        direction.push('right');
+    } else if (angleDeg >= 45 && angleDeg < 135) { // Down
+        direction.push('down');
+    } else if (angleDeg >= 135 || angleDeg < -135) { // Left
+        direction.push('left');
+    } else if (angleDeg >= -135 && angleDeg < -45) { // Up
+        direction.push('up');
+    }
+
+    // Handle diagonals
+    if (angleDeg >= 22.5 && angleDeg < 67.5) { // North-East
+        direction.push('right', 'up');
+    } else if (angleDeg >= 112.5 && angleDeg < 157.5) { // South-East
+        direction.push('right', 'down');
+    } else if (angleDeg >= -157.5 && angleDeg < -112.5) { // South-West
+        direction.push('left', 'down');
+    } else if (angleDeg >= -67.5 && angleDeg < -22.5) { // North-West
+        direction.push('left', 'up');
+    }
+
+    // Execute throttled movement for each direction
+    direction.forEach(d => throttledMovePlayer(d));
+});
+
+
+
+joystickContainer.addEventListener('touchend', () => {
+    moving = false;
+    joystick.style.transform = 'translate(0px, 0px)'; // Reset joystick position
+});
+
+function mobileMovePlayer(direction) {
+    const speed = 10;
+    let nextX = player.x;
+    let nextY = player.y;
+    let isArrowClicked=true;
+
+    switch (direction) {
+        case 'up':
+            nextY -= speed;
+            console.log("Moving Up");
+            // Add code to move the player up
+            break;
+        case 'down':
+            nextY += speed;
+            console.log("Moving Down");
+            // Add code to move the player down
+            break;
+        case 'left':
+            nextX -= speed;
+            console.log("Moving Left");
+            // Add code to move the player left
+            break;
+        case 'right':
+            nextX += speed;
+            console.log("Moving Right");
+            // Add code to move the player right
+            break;
+        default :
+            isArrowClicked=false;
+            break ;
+    }
+
+    // Prevent movement if colliding with walls
+    if (!isCollidingWithWalls(nextX, nextY, player.width, player.height) && isArrowClicked && !stopPlayer) {
+        player.x = nextX;
+        player.y = nextY;
+        // Start timer on the first movement
+        startTimer();
+    }
+
+    // Check for coin collection after moving
+    collectCoin(player.x, player.y);
+}

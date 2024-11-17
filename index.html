@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="game-container">
+    <div class="game-container" width="200" height="300">
         <div class="header">
             <div class="timer">Time: <span id="time">00:00</span></div>
             <div class="score">Score: <span id="score">0</span></div>
@@ -15,6 +15,10 @@
         </div>
         <canvas id="mazeCanvas" width="800" height="600"></canvas>
     </div>
+    <div id="joystick-container">
+        <div id="joystick"></div>
+    </div>
+    
     <script src="game.js"></script>
 </body>
 </html>
