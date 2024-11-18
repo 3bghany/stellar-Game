@@ -21,14 +21,7 @@ body, html {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-
-    /* New size adjustments for PC */
-    /* width: 80%;
-    max-width: 1000px; 
-    height: 90vh; 
-    max-height: 800px; */
-    
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);    
 }
 
 /* Responsive Header */
@@ -58,6 +51,7 @@ body, html {
 
 /* Joystick Container */
 #joystick-container {
+    display:none;
     position: fixed;
     bottom: 10%;
     left: 5%;
@@ -123,8 +117,9 @@ body, html {
     }
 
     #joystick-container {
-        width: 100px;
-        height: 100px;
+        display:block;
+        width: 90px;
+        height: 90px;
         left: 10%;
     }
 
@@ -143,6 +138,7 @@ body, html {
     }
 
     #joystick-container {
+        display:block;
         width: 70px;
         height: 70px;
         left: 5%;

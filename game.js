@@ -8,7 +8,9 @@ let score = 0;
 let timerInterval;
 let gameEnded = false;
 let stopPlayer=false;
-let player = { x: 740, y: 550, width: 30, height: 30 }; // Player's start position
+let player = { x: 740, y: 550, width: 30, height: 30 ,imageWidth: 60,imageHeight: 90}; // Player's start position
+const playerImage = new Image();
+playerImage.src = 'drRabe3.png'; // Replace with the path to your image
 
 let coins = [
     { x: 60, y: 50, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
@@ -199,8 +201,8 @@ function drawWalls() {
 }
 
 function drawPlayer() {
-    // ctx.fillStyle = "#000";
-    // ctx.fillRect(player.x, player.y, player.width, player.height); // Player as a black rectangle
+    ctx.drawImage(playerImage, player.x - 15, player.y-60, player.imageWidth, player.imageHeight);
+    
 }
 
 function drawCoins() {
