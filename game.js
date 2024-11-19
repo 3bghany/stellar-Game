@@ -269,7 +269,7 @@ function isCollidingWithWalls(nextX, nextY, width, height) {
         if (y1 === y2) {
             if (nextY + height > minY && nextY < minY &&
                 ((nextX + width > minX && nextX < maxX) || (nextX > minX && nextX < maxX))) {
-                return true;
+                return "H";
             }
         }
 
@@ -277,7 +277,7 @@ function isCollidingWithWalls(nextX, nextY, width, height) {
         if (x1 === x2) {
             if (nextX + width > minX && nextX < minX &&
                 ((nextY + height > minY && nextY < maxY) || (nextY > minY && nextY < maxY))) {
-                return true;
+                return "V";
             }
         }
     }
@@ -318,12 +318,18 @@ function handleJoystickMovement() {
 
         let nextX = player.x + normalizedX;
         let nextY = player.y + normalizedY;
-
+        let collide=isCollidingWithWalls(nextX, nextY, player.width, player.height);
         // Prevent movement into walls or outside boundaries
-        if (!isCollidingWithWalls(nextX, nextY, player.width, player.height) && !stopPlayer) {
+        if (!collide && !stopPlayer) {
             player.x = nextX;
             player.y = nextY;
-            startTimer(); // Start the timer on movement
+            startTimer(); 
+        }else if((collide == 'H' ) && !stopPlayer){
+            player.x = nextX;
+            startTimer(); 
+        }else if((collide == 'V' ) && !stopPlayer){
+            player.y = nextY;
+            startTimer(); 
         }
 
         // Check for coin collection
