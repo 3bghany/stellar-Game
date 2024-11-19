@@ -8,9 +8,9 @@ let score = 0;
 let timerInterval;
 let gameEnded = false;
 let stopPlayer=false;
-let player = { x: 740, y: 550, width: 30, height: 30 ,imageWidth: 60,imageHeight: 90}; // Player's start position
+let player = { x: 740, y: 570, width: 20, height: 20 ,imageWidth: 45,imageHeight: 70}; // Player's start position
 const playerImage = new Image();
-playerImage.src = 'drRabe3.png'; // Replace with the path to your image
+playerImage.src = 'imgs/drRabe3.png'; // Replace with the path to your image
 
 let coins = [
     { x: 60, y: 50, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
@@ -25,8 +25,8 @@ function collectCoin(playerX, playerY) {
 
     coins.forEach(coin => {
         if (!coin.collected &&
-            playerX < coin.x + 10 && playerX + player.width > coin.x &&
-            playerY < coin.y + 10 && playerY + player.height > coin.y) {
+            playerX < coin.x + 20 && playerX + player.width+20 > coin.x &&
+            playerY < coin.y + 20 && playerY + player.height+20 > coin.y) {
             coin.collected = true;
             showPopup(coin.message); // Show the message associated with the coin
             updateScore(10); // Increase score when coin is collected
@@ -201,7 +201,8 @@ function drawWalls() {
 }
 
 function drawPlayer() {
-    ctx.drawImage(playerImage, player.x - 15, player.y-60, player.imageWidth, player.imageHeight);
+    ctx.zIndex="500";
+    ctx.drawImage(playerImage, player.x - 15, player.y-50, player.imageWidth, player.imageHeight);
     
 }
 
@@ -285,12 +286,61 @@ function isCollidingWithWalls(nextX, nextY, width, height) {
 
 
 
+// Create Virtual Joystick instance
+var joy;
+// Wait for the DOM to load before initializing the joystick
+document.addEventListener("DOMContentLoaded", () => {
+    // console.log("Initializing joystick...");
+    joy = new VirtualJoystick({
+        container: document.body, // Joystick appears on the screen
+        mouseSupport: true,       // Enable mouse support for joystick
+        limitStickTravel: true,   // Restrict stick movement to radius
+        stickRadius: 100          // Radius of joystick control
+    });
+}, { passive: false });
+
+// Adjust the player's movement based on joystick input
+function handleJoystickMovement() {
+    // Check if the joystick instance is ready
+    if (!joy || typeof joy.deltaX !== 'function' || typeof joy.deltaY !== 'function') {
+        console.error("Joystick instance not initialized or unavailable.");
+        return;
+    }
+
+    const dx = joy.deltaX(); // Horizontal joystick movement
+    const dy = joy.deltaY(); // Vertical joystick movement
+
+    // Calculate normalized movement direction
+    const magnitude = Math.sqrt(dx * dx + dy * dy);
+    if (magnitude > 0) {
+        const normalizedX = (dx / magnitude) * 2; // Adjust speed factor as needed
+        const normalizedY = (dy / magnitude) * 2;
+
+        let nextX = player.x + normalizedX;
+        let nextY = player.y + normalizedY;
+
+        // Prevent movement into walls or outside boundaries
+        if (!isCollidingWithWalls(nextX, nextY, player.width, player.height) && !stopPlayer) {
+            player.x = nextX;
+            player.y = nextY;
+            startTimer(); // Start the timer on movement
+        }
+
+        // Check for coin collection
+        collectCoin(player.x, player.y);
+    }
+}
+
+
+
+
 // Main game loop
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
     drawWalls();
-    drawPlayer();
     drawCoins();
+    drawPlayer();
+    handleJoystickMovement();
     requestAnimationFrame(gameLoop);
 }
 
@@ -299,9 +349,6 @@ gameLoop();
 
 // Start timer when player moves
 window.addEventListener('keydown', movePlayer);
-// canvas.addEventListener('click', () => {
-//     startTimer();
-// });
 
 // Example data after the maze is completed
 function onGameCompleted() {
@@ -330,134 +377,3 @@ function calculateTimeTaken() {
 }
 
 document.getElementById('playerName').textContent = localStorage.getItem('username') || 'Guest';
-
-// joy stic controlling
-const joystickContainer = document.getElementById('joystick-container');
-const joystick = document.getElementById('joystick');
-
-let centerX = joystickContainer.offsetWidth / 2;
-let centerY = joystickContainer.offsetHeight / 2;
-let moving = false;
-let lastMoveTime = 0;
-const moveInterval = 70; // Move every 100ms (10 times per second)
-
-// Throttle function to control the movement rate
-function throttleMove(callback, interval) {
-    return (...args) => {
-        const now = Date.now();
-        if (now - lastMoveTime >= interval) {
-            callback(...args);
-            lastMoveTime = now;
-        }
-    };
-}
-
-// Throttled movePlayer function
-const throttledMovePlayer = throttleMove(mobileMovePlayer, moveInterval);
-
-joystickContainer.addEventListener('touchstart', (e) => {
-    moving = true;
-});
-
-joystickContainer.addEventListener('touchmove', (e) => {
-    if (!moving) return;
-
-    const touch = e.touches[0];
-    const rect = joystickContainer.getBoundingClientRect();
-
-    let x = touch.clientX - rect.left;
-    let y = touch.clientY - rect.top;
-
-    let deltaX = x - centerX;
-    let deltaY = y - centerY;
-
-    // Calculate distance from the center
-    const distance = Math.min(Math.hypot(deltaX, deltaY), 40); // Limit joystick movement
-    const angle = Math.atan2(deltaY, deltaX);
-
-    // Calculate joystick position
-    const joystickX = distance * Math.cos(angle);
-    const joystickY = distance * Math.sin(angle);
-
-    joystick.style.transform = `translate(${joystickX}px, ${joystickY}px)`;
-
-    // Determine movement direction with throttling based on angle
-    const angleDeg = angle * 180 / Math.PI; // Convert angle to degrees
-    let direction = [];
-
-    // Handle diagonal and cardinal directions
-    if (angleDeg >= -45 && angleDeg < 45) { // Right
-        direction.push('right');
-    } else if (angleDeg >= 45 && angleDeg < 135) { // Down
-        direction.push('down');
-    } else if (angleDeg >= 135 || angleDeg < -135) { // Left
-        direction.push('left');
-    } else if (angleDeg >= -135 && angleDeg < -45) { // Up
-        direction.push('up');
-    }
-
-    // Handle diagonals
-    if (angleDeg >= 22.5 && angleDeg < 67.5) { // North-East
-        direction.push('right', 'up');
-    } else if (angleDeg >= 112.5 && angleDeg < 157.5) { // South-East
-        direction.push('right', 'down');
-    } else if (angleDeg >= -157.5 && angleDeg < -112.5) { // South-West
-        direction.push('left', 'down');
-    } else if (angleDeg >= -67.5 && angleDeg < -22.5) { // North-West
-        direction.push('left', 'up');
-    }
-
-    // Execute throttled movement for each direction
-    direction.forEach(d => throttledMovePlayer(d));
-});
-
-
-
-joystickContainer.addEventListener('touchend', () => {
-    moving = false;
-    joystick.style.transform = 'translate(0px, 0px)'; // Reset joystick position
-});
-
-function mobileMovePlayer(direction) {
-    const speed = 10;
-    let nextX = player.x;
-    let nextY = player.y;
-    let isArrowClicked=true;
-
-    switch (direction) {
-        case 'up':
-            nextY -= speed;
-            console.log("Moving Up");
-            // Add code to move the player up
-            break;
-        case 'down':
-            nextY += speed;
-            console.log("Moving Down");
-            // Add code to move the player down
-            break;
-        case 'left':
-            nextX -= speed;
-            console.log("Moving Left");
-            // Add code to move the player left
-            break;
-        case 'right':
-            nextX += speed;
-            console.log("Moving Right");
-            // Add code to move the player right
-            break;
-        default :
-            isArrowClicked=false;
-            break ;
-    }
-
-    // Prevent movement if colliding with walls
-    if (!isCollidingWithWalls(nextX, nextY, player.width, player.height) && isArrowClicked && !stopPlayer) {
-        player.x = nextX;
-        player.y = nextY;
-        // Start timer on the first movement
-        startTimer();
-    }
-
-    // Check for coin collection after moving
-    collectCoin(player.x, player.y);
-}

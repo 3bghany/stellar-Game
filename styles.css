@@ -49,30 +49,6 @@ body, html {
     height: 60vh; /* Use viewport height for better scaling */
 }
 
-/* Joystick Container */
-#joystick-container {
-    display:none;
-    position: fixed;
-    bottom: 10%;
-    left: 5%;
-    width: 80px;  /* Adjusted size for mobile */
-    height: 80px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 50%;
-    touch-action: none;
-}
-
-#joystick {
-    width: 30px; /* Adjusted size for mobile */
-    height: 30px;
-    background: #0085ff;
-    border-radius: 50%;
-    position: relative;
-    left: 25px;
-    top: 25px;
-    transition: 0.1s;
-}
-
 /* Popup Styling */
 .popup {
     position: fixed;
@@ -115,18 +91,6 @@ body, html {
     #mazeCanvas {
         height: 70vh; /* Increase height for tablets */
     }
-
-    #joystick-container {
-        display:block;
-        width: 90px;
-        height: 90px;
-        left: 10%;
-    }
-
-    #joystick {
-        width: 40px;
-        height: 40px;
-    }
 }
 
 /* For mobile phones */
@@ -136,19 +100,6 @@ body, html {
         align-items: center;
         font-size: 1rem;
     }
-
-    #joystick-container {
-        display:block;
-        width: 70px;
-        height: 70px;
-        left: 5%;
-    }
-
-    #joystick {
-        width: 25px;
-        height: 25px;
-    }
-
     #mazeCanvas {
         height: 50vh; /* Decrease height for mobile */
     }
