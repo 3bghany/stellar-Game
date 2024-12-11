@@ -13,10 +13,10 @@ const playerImage = new Image();
 playerImage.src = 'imgs/drRabe3.png'; // Replace with the path to your image
 
 let coins = [
-    // { x: 60, y: 50, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
-    // { x: 580, y: 50, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
-    // { x: 50, y: 400, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
-    // { x: 150, y: 570, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
+    { x: 60, y: 50, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
+    { x: 580, y: 50, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
+    { x: 50, y: 400, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
+    { x: 150, y: 570, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
     { x: 630, y: 330, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
 ];
 
@@ -57,7 +57,8 @@ function endGame() {
     const playerName = localStorage.getItem('username') || 'Guest';
     saveTime(playerName, totalTime);
 
- 
+    // Show end-game popup
+    showEndGamePopup(hours, mins, secs);
 
     // Redirect after 5 seconds (duration of the popup)
     setTimeout(() => {
@@ -93,7 +94,18 @@ async function saveTime(name, time) {
     }
 }
 
+function showEndGamePopup(hours, minutes, seconds) {
+    let message = `You ended the game!\nTime spent: ${hours} hours, ${minutes} minutes, and ${seconds} seconds.`;
+    let popup = document.createElement("div");
+    popup.className = 'popup visible';
+    popup.textContent = message;
+    document.body.appendChild(popup);
 
+    // Remove popup after 5 seconds
+    setTimeout(() => {
+        document.body.removeChild(popup);
+    }, 5000);
+}
 
 function showPopup(message) {
     let popup = document.createElement("div");
@@ -257,7 +269,7 @@ function isCollidingWithWalls(nextX, nextY, width, height) {
         if (y1 === y2) {
             if (nextY + height > minY && nextY < minY &&
                 ((nextX + width > minX && nextX < maxX) || (nextX > minX && nextX < maxX))) {
-                return true;
+                return "H";
             }
         }
 
@@ -265,7 +277,7 @@ function isCollidingWithWalls(nextX, nextY, width, height) {
         if (x1 === x2) {
             if (nextX + width > minX && nextX < minX &&
                 ((nextY + height > minY && nextY < maxY) || (nextY > minY && nextY < maxY))) {
-                return true;
+                return "V";
             }
         }
     }
@@ -289,6 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Adjust the player's movement based on joystick input
 function handleJoystickMovement() {
+    // Check if the joystick instance is ready
     if (!joy || typeof joy.deltaX !== 'function' || typeof joy.deltaY !== 'function') {
         console.error("Joystick instance not initialized or unavailable.");
         return;
@@ -297,28 +310,31 @@ function handleJoystickMovement() {
     const dx = joy.deltaX(); // Horizontal joystick movement
     const dy = joy.deltaY(); // Vertical joystick movement
 
-    // Normalize movement to maintain consistent speed
+    // Calculate normalized movement direction
     const magnitude = Math.sqrt(dx * dx + dy * dy);
     if (magnitude > 0) {
-        const normalizedX = (dx / magnitude) * 6; // Adjust speed factor as needed
-        const normalizedY = (dy / magnitude) * 6;
+        const normalizedX = (dx / magnitude) * 2; // Adjust speed factor as needed
+        const normalizedY = (dy / magnitude) * 2;
 
         let nextX = player.x + normalizedX;
         let nextY = player.y + normalizedY;
-
-        // Handle collisions separately for each axis
-        if (!isCollidingWithWalls(nextX, player.y, player.width, player.height) && !stopPlayer) {
-            player.x = nextX; // Allow movement along X-axis
+        let collide=isCollidingWithWalls(nextX, nextY, player.width, player.height);
+        // Prevent movement into walls or outside boundaries
+        if (!collide && !stopPlayer) {
+            player.x = nextX;
+            player.y = nextY;
+            startTimer(); 
+        }else if((collide == 'H' ) && !stopPlayer){
+            player.x = nextX;
+            startTimer(); 
+        }else if((collide == 'V' ) && !stopPlayer){
+            player.y = nextY;
+            startTimer(); 
         }
-        if (!isCollidingWithWalls(player.x, nextY, player.width, player.height) && !stopPlayer) {
-            player.y = nextY; // Allow movement along Y-axis
-        }
 
-        startTimer(); // Start the timer on movement
+        // Check for coin collection
+        collectCoin(player.x, player.y);
     }
-
-    // Check for coin collection
-    collectCoin(player.x, player.y);
 }
 
 
