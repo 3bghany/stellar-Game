@@ -13,10 +13,10 @@ const playerImage = new Image();
 playerImage.src = 'imgs/drRabe3.png'; // Replace with the path to your image
 
 let coins = [
-    // { x: 60, y: 50, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
-    // { x: 580, y: 50, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
-    // { x: 50, y: 400, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
-    // { x: 150, y: 570, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
+    { x: 60, y: 50, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
+    { x: 580, y: 50, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
+    { x: 50, y: 400, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
+    { x: 150, y: 570, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
     { x: 630, y: 330, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
 ];
 
@@ -300,8 +300,8 @@ function handleJoystickMovement() {
     // Normalize movement to maintain consistent speed
     const magnitude = Math.sqrt(dx * dx + dy * dy);
     if (magnitude > 0) {
-        const normalizedX = (dx / magnitude) * 6; // Adjust speed factor as needed
-        const normalizedY = (dy / magnitude) * 6;
+        const normalizedX = (dx / magnitude) * 2; // Adjust speed factor as needed
+        const normalizedY = (dy / magnitude) * 2;
 
         let nextX = player.x + normalizedX;
         let nextY = player.y + normalizedY;
