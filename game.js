@@ -58,18 +58,15 @@ function endGame() {
     saveTime(playerName, totalTime);
 
  
-
     // Redirect after 5 seconds (duration of the popup)
     setTimeout(() => {
         window.location.href = "leaderboard.html"; // Change to your actual leaderboard page
-    }, 5000);
+    },5000);
 }
 
 async function saveTime(name, time) {
-    let times = JSON.parse(localStorage.getItem('times')) || []; // Get existing times or create a new array
-    times.push({ name: name, time: time, totalSeconds: seconds }); // Add new time with total seconds for sorting
-    localStorage.setItem('times', JSON.stringify(times)); // Save updated times to local storage
-    const dataURL = 'http://localhost/wordpress-6.6.2/wordpress/wp-json/stellar/v1/leaderboard';
+
+    const dataURL = 'https://reactionacademy.org/wp-json/stellar/v1/leaderboard';
     try {
         const response = await fetch(dataURL, {
             method: 'POST',
@@ -84,7 +81,13 @@ async function saveTime(name, time) {
         });
 
         if (response.ok) {
-            console.log('Data added successfully');
+
+            const responseData = await response.json();
+            console.log( responseData[0]);
+
+            let player_data={id:responseData[1],name: name, time: time, totalSeconds: seconds };
+            localStorage.setItem('player', JSON.stringify(player_data));
+
         } else {
             console.error('Failed to add data');
         }
@@ -121,8 +124,10 @@ function showPopup(message) {
     // Remove popup after 3 seconds
     setTimeout(() => {
         document.body.removeChild(popup);
-        timerInterval = setInterval(updateTimer, 1000);
-        stopPlayer=false;
+        if(!gameEnded){
+            timerInterval = setInterval(updateTimer, 1000);
+            stopPlayer=false;
+        }
     }, 3000);
 }
 
@@ -191,7 +196,6 @@ function drawWalls() {
 function drawPlayer() {
     ctx.zIndex="500";
     ctx.drawImage(playerImage, player.x - 15, player.y-50, player.imageWidth, player.imageHeight);
-    
 }
 
 function drawCoins() {
