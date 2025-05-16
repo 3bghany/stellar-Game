@@ -8,9 +8,10 @@ body, html {
     align-items: center;
     height: 100%;
     width: 100%;
-    background-image: url('imgs/background.jpg');
-    background-repeat: repeat;
-    background-size:cover;
+    background-color: #d2691e;
+/*     background-image: url('imgs/background.jpg'); */
+/*     background-repeat: repeat; */
+/*     background-size:cover; */
     font-family: Arial, sans-serif;
     overflow: hidden; /* Prevent scrolling */
 }
