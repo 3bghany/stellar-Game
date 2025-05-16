@@ -86,13 +86,31 @@
     </div>
     <a href="splash.html" class="home-button">Go To Home</a>
     <script>
-        const socket = new WebSocket('wss://nemaa.site/websocket', "maze"); //aws websocket
-        let times = [];
-        
-        socket.onopen = () => {
-          socket.send('{"password":"stellar-websocket"}');
-          console.log('Connected to WebSocket server')
-        };
+        const socket = new WebSocket('wss://nemaa.site/websocket', "maze");
+
+let times = [];
+
+socket.onopen = async () => { // Make the function async to use await
+    const dataURL = 'https://nemaa.site/get-token';
+    try {
+        const response = await fetch(dataURL, { // Use await to resolve the promise
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.ok) {
+            const responseData = await response.json(); // Await JSON parsing
+            socket.send('{"token":"'+responseData.token+'"}');
+            console.log('Connected to WebSocket server');
+        } else {
+            console.error('Failed to get data, status:', response.status);
+        }
+    } catch (error) {
+        console.error('Error happend:', error);
+    }
+};
 
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data);

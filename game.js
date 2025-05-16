@@ -8,16 +8,19 @@ let score = 0;
 let timerInterval;
 let gameEnded = false;
 let stopPlayer=false;
-let player = { x: 740, y: 570, width: 20, height: 20 ,imageWidth: 45,imageHeight: 70}; // Player's start position
-const playerImage = new Image();
-playerImage.src = 'imgs/drRabe3.png'; // Replace with the path to your image
+let player = { x: 680, y: 420, width: 20, height: 20 ,imageWidth: 45,imageHeight: 60}; // Player's start position
+let playerImage = new Image();
+playerImage.src = 'imgs/chickenv1.png'; // Replace with the path to your image
+const coinImage = new Image();
+coinImage.src = "imgs/onehvt.png";
+let coinCounter=0;
 
 let coins = [
-    { x: 60, y: 50, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
-    { x: 580, y: 50, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
-    { x: 50, y: 400, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
-    { x: 150, y: 570, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
-    { x: 630, y: 330, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
+    // { x: 60, y: 50, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
+    // { x: 580, y: 50, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
+    // { x: 50, y: 400, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
+    // { x: 150, y: 570, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
+    { x: 630, y: 130, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
 ];
 
 function collectCoin(playerX, playerY) {
@@ -30,6 +33,8 @@ function collectCoin(playerX, playerY) {
             coin.collected = true;
             showPopup(coin.message); // Show the message associated with the coin
             updateScore(10); // Increase score when coin is collected
+            coinCounter++;
+            drawPlayer(coinCounter);
         }
     });
 
@@ -151,35 +156,25 @@ function updateScore(points) {
 
 let walls = [
     // Outer boundary
-    [0, 0, 800, 0], [0, 0, 0, 600], [800, 0, 800, 600], [0, 600, 800, 600],
+    [0, 0, 740, 0], [0, 0, 0, 450], [740, 0, 740, 450], [0, 450, 740, 450],
     // Complex inner walls (adjust as needed)
-    [20, 590, 780, 590],[20, 70, 20,610 ],[20, 30, 780, 30],[780, 30, 780, 550],
-    [520, 550, 520, 590],[180, 550, 180, 590],[650, 550, 780, 550],[650, 510, 650, 550],
-    [610, 510, 610, 550],[460, 510, 460, 550],[240, 510, 240, 550],[120, 510, 120, 550],
-    [240, 550, 460, 550],[180, 550, 80, 550],[610, 510, 460, 510],[120, 510, 400, 510],
-    [20, 510, 80, 510],[80, 470, 80, 510],[180, 470, 180, 510],[400, 470, 400, 510],
-    [740, 390, 740, 510],[650, 470, 740, 470],[320, 470, 540, 470],[220, 470, 270, 470],
-    [80, 470, 130, 470],[610, 430, 610, 470],[470, 430, 470, 470],[220, 430, 220, 470],
-    [270, 350, 270, 470],[130, 390, 130, 470],[130, 430, 180, 430],[320, 430, 430, 430],
-    [470, 430, 540, 430],[610, 430, 650, 430],[740, 390, 780, 390],[20, 430, 80, 430],
-    [80, 350, 80, 430],[430, 390, 430, 430],[380, 340, 380, 390],[650, 350, 650, 430],
-    [80, 350, 170, 350],[270, 350, 320, 350],[650, 350, 780, 350],[450, 350, 490, 350],
-    [380, 390, 530, 390],[450, 310, 450, 350],[490, 270, 490, 350],[530, 270, 530, 390],
-    [610, 310, 610, 390],[740, 270, 740, 310],[650, 230, 650, 310],[320, 350, 320, 430],
-    [220, 310, 220, 390],[170, 310, 170, 390],[20, 310, 100, 310],[170, 310, 320, 310],
-    [410, 310, 450, 310],[610, 310, 740, 310],[410, 270, 410, 310],[320, 270, 320, 310],
-    [100, 270, 100, 310],[60, 270, 140, 270],[220, 270, 320, 270],[490, 270, 610, 270],
-    [650, 230, 780, 230],[450, 230, 530, 230],[180, 230, 410, 230],[100, 230, 140, 230],
-    [140, 190, 140, 270],[220, 230, 220, 270],[450, 230, 450, 270],[610, 190, 610, 270],
-    [500, 190, 690, 190],[350, 190, 450, 190],[220, 190, 310, 190],[60, 190, 100, 190],
-    [60, 190, 60, 270],[100, 150, 100, 190],[100, 150, 140, 150],[220, 110, 220, 190],
-    [310, 70, 310, 190],[450, 150, 450, 190],[620, 110, 620, 190],[500, 190, 500, 230],
-    [690, 150, 690, 190],[430, 110, 740, 110],[180, 110, 220, 110],[310, 110, 350, 110],
-    [660, 150, 740, 150],[450, 150, 620, 150],[350, 150, 390, 150],[350, 110, 350, 150],
-    [390, 70, 390, 150],[500, 70, 500, 110],[500, 70, 620, 70],[620, 30, 620, 70],
-    [740, 70, 740, 110],[660, 70, 740, 70],[390, 70, 460, 70],[390, 30, 390, 70],
-    [270, 70, 310, 70],[270, 70, 270, 150],[180, 110, 180, 190],[20, 70, 220, 70],
-    [140, 70, 140, 110],[60, 110, 140, 110],[60, 110, 60, 150],
+    [0, 440, 720, 440], [0, 50, 0, 460], [0, 0, 720, 0], [720, 0, 720, 380],
+    [460, 380, 460, 440], [120, 380, 120, 440], [590, 380, 720, 380], [590, 340, 590, 380],
+    [550, 340, 550, 380], [380, 340, 380, 380], [180, 340, 180, 380], [60, 340, 60, 380],
+     [180, 380, 380, 380], [120, 380, 20, 380], [550, 340, 380, 340], [60, 340, 340, 340],
+      [20, 300, 20, 340], [120, 300, 120, 340], [340, 300, 340, 340], [260, 300, 480, 300],
+       [160, 300, 170, 300], [20, 300, 70, 300], [550, 250, 550, 300], [390, 250, 390, 300],
+        [160, 250, 160, 300], [210, 130, 210, 300], [70, 180, 70, 300], [70, 250, 120, 250],
+         [260, 250, 340, 250], [390, 250, 480, 250], [550, 250, 590, 250],
+          [20, 130, 20, 250], [340, 180, 340, 250], [320, 180, 320, 180], [590, 130, 590, 280],
+           [20, 130, 110, 130], [210, 130, 260, 130], [590, 130, 720, 130], [390, 130, 430, 130],
+           [320, 180, 470, 180], [390, 130, 390, 130], [430, 80, 430, 130], [470, 80, 470, 180],
+           [550, 130, 550, 180], [680, 80, 680, 130], [590, 80, 590, 130], [260, 130, 260, 250],
+           [160, 130, 160, 180], [110, 130, 110, 180], [110, 130, 260, 130], [350, 130, 390, 130],
+           [550, 130, 680, 130], [350, 80, 350, 130], [260, 80, 260, 130], [40, 80, 40, 130], 
+           [0, 80, 80, 80], [160, 80, 260, 80], [430, 80, 550, 80], [590, 80, 720, 80], 
+           [390, 80, 470, 80], [120, 80, 350, 80], [40, 80, 80, 80], [80, 40, 80, 80], 
+           [160, 80, 160, 80], [390, 80, 390, 80], [550, 40, 550, 80]
 
 ];
 function drawWalls() {
@@ -193,18 +188,42 @@ function drawWalls() {
     });
 }
 
-function drawPlayer() {
+function drawPlayer(coinCounter) {
     ctx.zIndex="500";
-    ctx.drawImage(playerImage, player.x - 15, player.y-50, player.imageWidth, player.imageHeight);
+    if(coinCounter < 2){
+        ctx.drawImage(playerImage, player.x - 15, player.y-50, player.imageWidth+10, player.imageHeight+10);
+    }else if(coinCounter < 4){
+        playerImage.src = 'imgs/chickenv2.png';
+        ctx.drawImage(playerImage, player.x-25, player.y-50, player.imageWidth+30, player.imageHeight);
+    }else{
+        playerImage.src = 'imgs/chickenv3.png';
+        ctx.drawImage(playerImage, player.x-30, player.y-50, player.imageWidth+35, player.imageHeight+10);
+    }
 }
 
+let time = 0;
+
 function drawCoins() {
-    coins.forEach(coin => {
+    time += 0.1; // Time for animation
+
+    coins.forEach((coin, index) => {
         if (!coin.collected) {
-            ctx.fillStyle = "#FFD700"; // Gold coins
+            // Bounce effect
+            const bounce = Math.sin(time + index) * 5; // Slight bounce
+
+            // Brighter border (glow effect)
+            ctx.save();
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = "#ffff66"; // Bright yellow glow
+            ctx.drawImage(coinImage, coin.x - 5, coin.y - 25 + bounce, 20, 50);
+            ctx.restore();
+
+            // Optional: draw a circular border
             ctx.beginPath();
-            ctx.arc(coin.x, coin.y, 10, 0, Math.PI * 2); // Coin radius = 10
-            ctx.fill();
+            ctx.arc(coin.x + 5, coin.y + bounce, 30, 0, Math.PI * 2);
+            ctx.strokeStyle = "#fff000"; // Bright stroke
+            ctx.lineWidth = 2;
+            ctx.stroke();
         }
     });
 }
@@ -333,7 +352,7 @@ function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
     drawWalls();
     drawCoins();
-    drawPlayer();
+    drawPlayer(coinCounter);
     handleJoystickMovement();
     requestAnimationFrame(gameLoop);
 }
