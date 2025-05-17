@@ -16,11 +16,11 @@ coinImage.src = "imgs/onehvt.png";
 let coinCounter=0;
 
 let coins = [
-    // { x: 60, y: 50, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
-    // { x: 580, y: 50, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
-    // { x: 50, y: 400, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
-    // { x: 150, y: 570, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
-    { x: 630, y: 130, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
+    { x: 30, y: 240, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
+    { x: 420, y: 150, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
+    { x: 70, y: 410, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
+    { x: 40, y: 40, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
+    { x: 680, y: 190, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
 ];
 
 function collectCoin(playerX, playerY) {
@@ -161,20 +161,20 @@ let walls = [
     [0, 440, 720, 440], [0, 50, 0, 460], [0, 0, 720, 0], [720, 0, 720, 380],
     [460, 380, 460, 440], [120, 380, 120, 440], [590, 380, 720, 380], [590, 340, 590, 380],
     [550, 340, 550, 380], [380, 340, 380, 380], [180, 340, 180, 380], [60, 340, 60, 380],
-     [180, 380, 380, 380], [120, 380, 20, 380], [550, 340, 380, 340], [60, 340, 340, 340],
-      [20, 300, 20, 340], [120, 300, 120, 340], [340, 300, 340, 340], [260, 300, 480, 300],
-       [160, 300, 170, 300], [20, 300, 70, 300], [550, 250, 550, 300], [390, 250, 390, 300],
-        [160, 250, 160, 300], [210, 130, 210, 300], [70, 180, 70, 300], [70, 250, 120, 250],
-         [260, 250, 340, 250], [390, 250, 480, 250], [550, 250, 590, 250],
-          [20, 130, 20, 250], [340, 180, 340, 250], [320, 180, 320, 180], [590, 130, 590, 280],
-           [20, 130, 110, 130], [210, 130, 260, 130], [590, 130, 720, 130], [390, 130, 430, 130],
-           [320, 180, 470, 180], [390, 130, 390, 130], [430, 80, 430, 130], [470, 80, 470, 180],
-           [550, 130, 550, 180], [680, 80, 680, 130], [590, 80, 590, 130], [260, 130, 260, 250],
-           [160, 130, 160, 180], [110, 130, 110, 180], [110, 130, 260, 130], [350, 130, 390, 130],
-           [550, 130, 680, 130], [350, 80, 350, 130], [260, 80, 260, 130], [40, 80, 40, 130], 
-           [0, 80, 80, 80], [160, 80, 260, 80], [430, 80, 550, 80], [590, 80, 720, 80], 
-           [390, 80, 470, 80], [120, 80, 350, 80], [40, 80, 80, 80], [80, 40, 80, 80], 
-           [160, 80, 160, 80], [390, 80, 390, 80], [550, 40, 550, 80]
+    [180, 380, 380, 380], [120, 380,60, 380], [550, 340, 380, 340], [60, 340, 340, 340],
+    [120, 300, 120, 340], [340, 300, 340, 340], [260, 300, 480, 300],
+    [160, 280, 210, 280], [0, 280, 70, 280], [550, 250, 550, 300], [390, 250, 390, 300],
+    [160, 250, 160, 280], [210, 130, 210, 280], [70, 180, 70, 280], [70, 250, 120, 250],
+    [260, 250, 340, 250], [390, 250, 480, 250], [550, 250, 590, 250],
+    [340, 180, 340, 250], [320, 180, 320, 180], [590, 130, 590, 280],
+    [0, 130, 110, 130], [210, 130, 260, 130], [590, 130, 720, 130], [350, 130, 430, 130],
+    [320, 180, 470, 180], [390, 130, 390, 130], [430, 80, 430, 130], [470, 80, 470, 180],
+    [550, 130, 550, 180], [260, 130, 260, 250],[650, 180, 650, 320],[650, 230, 720, 230],
+    [160, 130, 160, 180], [110, 130, 260, 130],
+    [550, 130, 680, 130], [350, 80, 350, 130], 
+    [0, 80, 80, 80], [160, 80, 260, 80], [430, 80, 550, 80], [590, 80, 720, 80], 
+    [120, 80, 350, 80],  [80, 40, 80, 80], 
+    [160, 80, 160, 80], [390, 80, 390, 80], [550, 40, 550, 80]
 
 ];
 function drawWalls() {
