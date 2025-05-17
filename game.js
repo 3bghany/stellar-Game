@@ -118,15 +118,15 @@ function showPopup(message) {
     
     
     setJoystickState(false);
-    // // Remove popup after 3 seconds
-    // setTimeout(() => {
-    //     document.body.removeChild(popup);
-    //     if(!gameEnded){
-    //         timerInterval = setInterval(updateTimer, 1000);
-    //         stopPlayer=false;
-    //         setJoystickState(true);
-    //     }
-    // }, 3000);
+    // Remove popup after 3 seconds
+    setTimeout(() => {
+        document.body.removeChild(popup);
+        if(!gameEnded){
+            timerInterval = setInterval(updateTimer, 1000);
+            stopPlayer=false;
+            setJoystickState(true);
+        }
+    }, 3000);
 }
 
 function updateTimer() {
