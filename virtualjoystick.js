@@ -50,7 +50,7 @@ var VirtualJoystick	= function(opts)
 		this._container.addEventListener( 'mousemove'	, this._$onMouseMove	, false );
 	}
 }
-
+	let doNothing=true;
 VirtualJoystick.prototype.destroy	= function()
 {
 	this._container.removeChild(this._baseEl);
@@ -244,7 +244,6 @@ VirtualJoystick.prototype._onTouchStart	= function(event)
 {
 	// if there is already a touch inprogress do nothing
 	if( this._touchIdx !== null )	return;
-
 	// notify event for validation
 	var isValid	= this.dispatchEvent('touchStartValidation', event);
 	if( isValid === false )	return;

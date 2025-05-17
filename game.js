@@ -20,7 +20,9 @@ let coins = [
     { x: 420, y: 150, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
     { x: 70, y: 410, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
     { x: 40, y: 40, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
-    { x: 680, y: 190, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
+    // { x: 680, y: 190, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
+    { x: 650, y: 420, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
+
 ];
 
 function collectCoin(playerX, playerY) {
@@ -105,18 +107,7 @@ async function saveTime(name, time) {
 
 function showPopup(message) {
     let popup = document.createElement("div");
-    popup.style.position = "fixed";
-    popup.style.top = "30%";
-    popup.style.left = "30%";
-    popup.style.width = "300px";
-    popup.style.padding = "20px";
-    popup.style.backgroundColor = "orange";
-    popup.style.border = "2px solid #000";
-    popup.style.color = "#fff";
-    popup.style.textAlign = "center";
-    popup.style.borderRadius = "10px";
-    popup.style.fontFamily = "Arial, sans-serif";
-    popup.style.zIndex = "1000";
+    popup.className = "my-popup";
 
     popup.textContent = message; // Add message content
 
@@ -124,16 +115,18 @@ function showPopup(message) {
     document.body.appendChild(popup);
     clearInterval(timerInterval); // Stop the timer
     stopPlayer=true;
-
-
-    // Remove popup after 3 seconds
-    setTimeout(() => {
-        document.body.removeChild(popup);
-        if(!gameEnded){
-            timerInterval = setInterval(updateTimer, 1000);
-            stopPlayer=false;
-        }
-    }, 3000);
+    
+    
+    setJoystickState(false);
+    // // Remove popup after 3 seconds
+    // setTimeout(() => {
+    //     document.body.removeChild(popup);
+    //     if(!gameEnded){
+    //         timerInterval = setInterval(updateTimer, 1000);
+    //         stopPlayer=false;
+    //         setJoystickState(true);
+    //     }
+    // }, 3000);
 }
 
 function updateTimer() {
@@ -173,7 +166,7 @@ let walls = [
     [160, 130, 160, 180], [110, 130, 260, 130],
     [550, 130, 680, 130], [350, 80, 350, 130], 
     [0, 80, 80, 80], [160, 80, 260, 80], [430, 80, 550, 80], [590, 80, 720, 80], 
-    [120, 80, 350, 80],  [80, 40, 80, 80], 
+    [120, 80, 350, 80],  
     [160, 80, 160, 80], [390, 80, 390, 80], [550, 40, 550, 80]
 
 ];
@@ -294,13 +287,16 @@ function isCollidingWithWalls(nextX, nextY, width, height) {
     }
     return false;
 }
-
-
+// Create a variable to control joystick visibility and functionality
+let joystickEnabled = true; // Set this to false to disable the joystick
 
 // Create Virtual Joystick instance
-var joy;
-// Wait for the DOM to load before initializing the joystick
-document.addEventListener("DOMContentLoaded", () => {
+let joy;
+
+// Function to initialize the joystick
+function initializeJoystick() {
+    if (!joystickEnabled) return; // Don't initialize if disabled
+    
     // console.log("Initializing joystick...");
     joy = new VirtualJoystick({
         container: document.body, // Joystick appears on the screen
@@ -308,6 +304,32 @@ document.addEventListener("DOMContentLoaded", () => {
         limitStickTravel: true,   // Restrict stick movement to radius
         stickRadius: 100          // Radius of joystick control
     });
+}
+
+// Function to destroy the joystick
+function destroyJoystick() {
+    if (joy) {
+        joy.destroy();
+        joy = null;
+    }
+}
+
+// Function to toggle joystick state
+function setJoystickState(enabled) {
+    joystickEnabled = enabled;
+    
+    if (enabled) {
+        initializeJoystick();
+    } else {
+        destroyJoystick();
+    }
+}
+// Wait for the DOM to load before initializing the joystick
+document.addEventListener("DOMContentLoaded", () => {
+    // Only initialize if enabled
+    if (joystickEnabled) {
+        initializeJoystick();
+    }
 }, { passive: false });
 
 // Adjust the player's movement based on joystick input
