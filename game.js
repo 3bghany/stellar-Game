@@ -147,9 +147,12 @@ function showPopup(message,answer) {
         closepopup(popup);
     });
     setJoystickState(false);
+<<<<<<< HEAD
 
 }
 function closepopup(popup){
+=======
+>>>>>>> d96f3e8d601a2bcc695a3cf47617d3500040f277
     // Remove popup after 3 seconds
     setTimeout(() => {
         document.body.removeChild(popup);
@@ -158,7 +161,11 @@ function closepopup(popup){
             stopPlayer=false;
             setJoystickState(true);
         }
+<<<<<<< HEAD
     }, 1000);
+=======
+    }, 3000);
+>>>>>>> d96f3e8d601a2bcc695a3cf47617d3500040f277
 }
 
 function updateTimer() {
