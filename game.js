@@ -14,15 +14,14 @@ playerImage.src = 'imgs/chickenv1.png'; // Replace with the path to your image
 const coinImage = new Image();
 coinImage.src = "imgs/onehvt.png";
 let coinCounter=0;
+let joyAvailable=true;
 
 let coins = [
-    { x: 30, y: 240, collected: false, message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
-    { x: 420, y: 150, collected: false, message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
-    { x: 70, y: 410, collected: false, message: "Other Event\nDescribe any other adverse event details here." },
-    { x: 40, y: 40, collected: false, message: "Medical History\nDetails about the patient's medical history related to the event." },
-    // { x: 680, y: 190, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
-    { x: 650, y: 420, collected: false, message: "Treatment Information\nInformation about treatments given for the adverse event." }
-
+    { x: 30, y: 240, collected: false,answer:"true", message: "Reporter Details\nThis could be a physician or pharmacist you heard about the adverse event from." },
+    { x: 420, y: 150, collected: false,answer:"false", message: "Event Details\nDetails about the adverse event caused by the product such as rash on the skin." },
+    { x: 70, y: 410, collected: false,answer:"true", message: "Other Event\nDescribe any other adverse event details here." },
+    { x: 40, y: 40, collected: false,answer:"true", message: "Medical History\nDetails about the patient's medical history related to the event." },
+    { x: 680, y: 190, collected: false,answer:"true", message: "Treatment Information\nInformation about treatments given for the adverse event." }
 ];
 
 function collectCoin(playerX, playerY) {
@@ -33,7 +32,7 @@ function collectCoin(playerX, playerY) {
             playerX < coin.x + 20 && playerX + player.width+20 > coin.x &&
             playerY < coin.y + 20 && playerY + player.height+20 > coin.y) {
             coin.collected = true;
-            showPopup(coin.message); // Show the message associated with the coin
+            showPopup(coin.message,coin.answer); // Show the message associated with the coin
             updateScore(10); // Increase score when coin is collected
             coinCounter++;
             drawPlayer(coinCounter);
@@ -105,28 +104,61 @@ async function saveTime(name, time) {
 
 
 
-function showPopup(message) {
+function showPopup(message,answer) {
     let popup = document.createElement("div");
     popup.className = "my-popup";
 
-    popup.textContent = message; // Add message content
+    let btntrue = document.createElement("button");
+    let btnfalse = document.createElement("button");
 
+    btntrue.innerText = "true";
+    btnfalse.innerText = "false";
+
+    btntrue.classList.add('btn');
+    btnfalse.classList.add('btn');
+
+    
+    popup.textContent = message; // Add message content
     // Append the popup to the body
     document.body.appendChild(popup);
+       // Append buttons to the popup
+    popup.appendChild(btntrue);
+    popup.appendChild(btnfalse);
     clearInterval(timerInterval); // Stop the timer
     stopPlayer=true;
-    
-    
+
+    btntrue.addEventListener("click", () => {
+        if(answer == "true") {
+            btntrue.classList.add("correct")
+        } else{
+            btntrue.classList.add("wrong");
+            btnfalse.classList.add("correct");
+        }
+        closepopup(popup);
+    });
+
+    btnfalse.addEventListener("click", () => {
+        if(answer == "false") {
+            btnfalse.classList.add("correct")
+        } else{
+            btnfalse.classList.add("wrong");
+            btntrue.classList.add("correct");
+        }
+        closepopup(popup);
+    });
     setJoystickState(false);
-    // // Remove popup after 3 seconds
-    // setTimeout(() => {
-    //     document.body.removeChild(popup);
-    //     if(!gameEnded){
-    //         timerInterval = setInterval(updateTimer, 1000);
-    //         stopPlayer=false;
-    //         setJoystickState(true);
-    //     }
-    // }, 3000);
+
+}
+function closepopup(popup){
+    // Remove popup after 3 seconds
+    setTimeout(() => {
+        document.body.removeChild(popup);
+        if(!gameEnded){
+            timerInterval = setInterval(updateTimer, 1000);
+            stopPlayer=false;
+            setJoystickState(true);
+        }
+    }, 1000);
 }
 
 function updateTimer() {
@@ -172,7 +204,7 @@ let walls = [
 ];
 function drawWalls() {
     ctx.strokeStyle = "#000"; // Set color for walls
-    ctx.lineWidth = 5; // Wall thickness
+    ctx.lineWidth = 3; // Wall thickness
     walls.forEach(wall => {
         ctx.beginPath();
         ctx.moveTo(wall[0], wall[1]);
@@ -187,7 +219,7 @@ function drawPlayer(coinCounter) {
         ctx.drawImage(playerImage, player.x - 15, player.y-50, player.imageWidth+10, player.imageHeight+10);
     }else if(coinCounter < 4){
         playerImage.src = 'imgs/chickenv2.png';
-        ctx.drawImage(playerImage, player.x-25, player.y-50, player.imageWidth+30, player.imageHeight);
+        ctx.drawImage(playerImage, player.x-25, player.y-40, player.imageWidth+30, player.imageHeight);
     }else{
         playerImage.src = 'imgs/chickenv3.png';
         ctx.drawImage(playerImage, player.x-30, player.y-50, player.imageWidth+35, player.imageHeight+10);
@@ -320,8 +352,10 @@ function setJoystickState(enabled) {
     
     if (enabled) {
         initializeJoystick();
+        joyAvailable=true;
     } else {
         destroyJoystick();
+        joyAvailable=false;
     }
 }
 // Wait for the DOM to load before initializing the joystick
@@ -375,7 +409,9 @@ function gameLoop() {
     drawWalls();
     drawCoins();
     drawPlayer(coinCounter);
-    handleJoystickMovement();
+    if(joyAvailable){
+        handleJoystickMovement();
+    }
     requestAnimationFrame(gameLoop);
 }
 
